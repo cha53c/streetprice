@@ -1,0 +1,19 @@
+<!DOCTYPE html><html><head><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script></head><body> <h1>Bar Chart</h1><canvas id="myChart" width="400" height="400"></canvas>
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+    labels: [1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020],
+    datasets: [{
+     data: [85000,105000,106000,105000,102000,94000,109000,93000,145000,229000,172000,149000,154000,154000,189000,205000,181000,140000,200000,210000,185000,230000,265000,355000,212000,312000,282000,285000,250000,343000,429000]
+}],
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'time',
+                distribution: 'series'
+            }]
+        }
+    }
+}});</script></body></html>
