@@ -1,0 +1,23 @@
+{
+  "name": "house-price-analysis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "price-history-parser.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cha53c/streetprice.git"
+  },
+  "author": "cha53c",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cha53c/streetprice/issues"
+  },
+  "homepage": "https://github.com/cha53c/streetprice#readme"
+}
