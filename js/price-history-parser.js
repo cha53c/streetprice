@@ -94,7 +94,7 @@ const PriceHistoryParser = (function () {
         });
         //TODO calculate averages for years with multiple sales
         data = buildDataAvgs(data);
-        data.sort(tupleSort);
+        data.sort(tupleSortByDate);
         console.log(data);
 
         let ret = [];
@@ -126,7 +126,7 @@ const PriceHistoryParser = (function () {
         return records.filter(rec => rec.propertyType.toLowerCase() == houseType.toLowerCase());
     }
 
-    function tupleSort(a, b) {
+    function tupleSortByDate(a, b) {
         a = a.x;
         b = b.x;
         return a - b;
@@ -170,7 +170,7 @@ const PriceHistoryParser = (function () {
     });
 
     return {
-      tupleSort: tupleSort
+      tupleSortByDate: tupleSortByDate
     };
 
 })();
