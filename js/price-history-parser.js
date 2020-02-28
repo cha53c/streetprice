@@ -161,3 +161,5 @@ stream.once('open', function (fd) {
 
     stream.end(html);
 });
+
+module.exports = PriceHistoryParser;
