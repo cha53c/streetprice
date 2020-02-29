@@ -18,16 +18,16 @@ const PriceHistoryParser = (function () {
         let salesRecord = [];
 
         $('.soldDetails').each(function (index, element) {
-            let houseNumber, salePrice, propertyType, bedRooms, soldDate;
+            let houseNumber, salePrice, propertyType, bedRooms, date;
             houseNumber = $(element).children('.soldAddress').text().split(",", 1)[0];
             $(element).find('tr').each(function (index, element) {
-                soldDate = $(element).children('.soldDate').text();
+                date = $(element).children('.soldDate').text();
                 salePrice = $(element).children('.soldPrice').text();
                 salePrice = salePrice.substring(1);
                 propertyType = $(element).children('.soldType').text().split(",", 1)[0];
                 bedRooms = $(element).children('.noBed').text().substring(0, 1);
                 let sale = {
-                    houseNumber: houseNumber, soldDate: soldDate,
+                    houseNumber: houseNumber, date: date,
                     propertyType: propertyType, bedRooms: bedRooms, salePrice: salePrice
                 }
                 // console.log(sale);
@@ -83,16 +83,16 @@ const PriceHistoryParser = (function () {
         let semiDetached = [];
         let detached = [];
 
-        terraced = filterRecords('Terraced');
+        terraced = records.filterByHouseType('Terraced');
         console.log(terraced);
 
         //TODO change to produce a dataset for each house type
         records.forEach(function (record) {
             let price = parseInt(record.salePrice, 10) * 1000;
-            let year = new Date(record.soldDate).getFullYear();
-            data.push({x: year, y: price});
+            let year = new Date(record.date).getFullYear();
+            data.push({date: year, y: price});
         });
-        //TODO calculate averages for years with multiple sales
+        // calculate averages for years with multiple sales
         data = buildDataAvgs(data);
         data.sort(tupleSortByDate);
         console.log(data);
@@ -122,13 +122,13 @@ const PriceHistoryParser = (function () {
         return arr.toString();
     }
 
-    function filterRecords(houseType) {
-        return records.filter(rec => rec.propertyType.toLowerCase() == houseType.toLowerCase());
-    }
+    Array.prototype.filterByHouseType = function (houseType) {
+        return this.filter(rec => rec.propertyType.toLowerCase() == houseType.toLowerCase());
+    };
 
     function tupleSortByDate(a, b) {
-        a = a.x;
-        b = b.x;
+        a = a.date;
+        b = b.date;
         return a - b;
     };
 
@@ -137,20 +137,19 @@ const PriceHistoryParser = (function () {
         let dates = [];
         let avgData = [];
         records.forEach(function (rec) {
-            dates.push(rec.x)
+            dates.push(rec.date)
         });
         //remove duplicates from the dates array
         dates = [...new Set(dates)];
-        //TODO use the dates array to cycle through the records calculation the averages and putting them in a new array
         //calculate the average for each date
         for (let i = 0; i < dates.length; i++) {
-            let temp = records.filter(rec => dates[i] == rec.x);
+            let temp = records.filter(rec => dates[i] == rec.date);
             let total = 0;
             temp.forEach(function (rec) {
                 total += parseInt(rec.y);
             });
             let avgPrice = Math.round(total / temp.length);
-            avgData.push({x: dates[i], y: avgPrice});
+            avgData.push({date: dates[i], y: avgPrice});
         }
         // console.log("average");
         // console.log(avgData);
@@ -170,7 +169,7 @@ const PriceHistoryParser = (function () {
     });
 
     return {
-      tupleSortByDate: tupleSortByDate
+        tupleSortByDate: tupleSortByDate,
     };
 
 })();
