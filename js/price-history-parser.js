@@ -2,8 +2,8 @@ const cheerio = require("cheerio")
 const fs = require("fs")
 
 const PriceHistoryParser = (function () {
-    let $;
 
+    let $;
     const text = fs.readFileSync('House Prices in Glencoe Road, Weybridge, Surrey, KT13.htm', (err, data) => {
         if (err) throw err;
         console.log(data);
@@ -26,7 +26,7 @@ const PriceHistoryParser = (function () {
 
         //create a record for each house sale in the street
         let salesRecord = [];
-        // create a record for each sale
+        // for each section in soldDetails great a sale record
         $('.soldDetails').each(function (index, element) {
 
             let houseNumber, salePrice, propertyType, bedRooms, date;
