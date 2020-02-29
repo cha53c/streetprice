@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const PriceHistoryParser = require("../js/price-history-parser");
 
 describe("sort tuples in to ascending date order", () => {
@@ -57,3 +59,28 @@ describe('filter records on house type', () => {
     })
 });
 
+describe('parseByHouse should build and array of objects from the html', () => {
+    const text = fs.readFileSync('./spec/data/House Prices in Glencoe Road, Weybridge, Surrey, KT13.htm', (err, data) => {
+        if (err) throw err;
+        console.log(data);
+    });
+    const records = PriceHistoryParser.parseByHouse(text);
+
+    it('should load test data from file', () => {
+        expect(text).not.toEqual(undefined);
+    })
+
+    it('should return an array of sale records for each sale', () => {
+        expect(records.length).toBe(31);
+    })
+
+    it('should have at least one correctly defined ', ()=> {
+        const sale = records[0];
+        expect(sale.hasOwnProperty('houseNumber')).toBe(true);
+        expect(sale.hasOwnProperty('date')).toBe(true);
+        expect(sale.hasOwnProperty('propertyType')).toBe(true);
+        expect(sale.hasOwnProperty('bedRooms')).toBe(true);
+        expect(sale.hasOwnProperty('salePrice')).toBe(true);
+    })
+
+})

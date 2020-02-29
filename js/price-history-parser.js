@@ -2,24 +2,37 @@ const cheerio = require("cheerio")
 const fs = require("fs")
 
 const PriceHistoryParser = (function () {
-
+    let $;
 
     const text = fs.readFileSync('House Prices in Glencoe Road, Weybridge, Surrey, KT13.htm', (err, data) => {
         if (err) throw err;
         console.log(data);
     });
-// note decoding html entities didn't work;
-    const $ = cheerio.load(text, {decodeEntities: false});
 
-    function parseByHouse() {
+    // TODO depends on parseByHouse initialising cheerio object
+    function getStreetAddress() {
         let address = $('.soldAddress').first().text();
         address = address.substring(address.indexOf(",") + 1);
-        console.log(address);
-        let salesRecord = [];
+        console.log('address: ' + address);
+        return address;
+    }
 
+
+    // parses the street data and builds are record for each sale
+    function parseByHouse(text) {
+        //TODO note: decoding html entities didn't work;
+        $ = cheerio.load(text, {decodeEntities: false});
+        let streetAddress = getStreetAddress();
+
+        //create a record for each house sale in the street
+        let salesRecord = [];
+        // create a record for each sale
         $('.soldDetails').each(function (index, element) {
+
             let houseNumber, salePrice, propertyType, bedRooms, date;
+            // get the house number
             houseNumber = $(element).children('.soldAddress').text().split(",", 1)[0];
+            // build a record for each sale of the house
             $(element).find('tr').each(function (index, element) {
                 date = $(element).children('.soldDate').text();
                 salePrice = $(element).children('.soldPrice').text();
@@ -30,7 +43,6 @@ const PriceHistoryParser = (function () {
                     houseNumber: houseNumber, date: date,
                     propertyType: propertyType, bedRooms: bedRooms, salePrice: salePrice
                 }
-                // console.log(sale);
                 salesRecord.push(sale)
             });
         });
@@ -39,8 +51,7 @@ const PriceHistoryParser = (function () {
     }
 
 
-//build into a chart in html
-
+    //build into a chart in html
     function buildHtml(req) {
         var header = '<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>';
         var body = buildLineChart();
@@ -111,7 +122,6 @@ const PriceHistoryParser = (function () {
 
     }
 
-
 // labels are each year from 1995 to 2020
     function generateLabels() {
         arr = [];
@@ -158,7 +168,7 @@ const PriceHistoryParser = (function () {
 
     var fileName = './file.html';
     var stream = fs.createWriteStream(fileName);
-    let records = parseByHouse();
+    let records = parseByHouse(text);
     let data = buildDataForLineChart(records);
     let labels = generateLabels();
 
@@ -170,6 +180,7 @@ const PriceHistoryParser = (function () {
 
     return {
         tupleSortByDate: tupleSortByDate,
+        parseByHouse: parseByHouse
     };
 
 })();
